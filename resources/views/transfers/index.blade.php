@@ -3,7 +3,54 @@
 @section('content')
     <div class="container">
         <div class="offset-2 col-sm-8">
-            <div class="card">
+            @if (count($transfersTo) > 0)
+                <div class="card mt-3">
+                    <div class="card-header">
+                        Incoming Transfers
+                    </div>
+
+                    <div class="card-body">
+                        <table class="table table-striped task-table">
+                            <thead>
+                                <th>Date</th>
+                                <th>Task</th>
+                                <th>From User</th>
+                                <th>Status</th>
+                                <th>&nbsp;</th>
+                            </thead>
+                            <tbody>
+                                @foreach ($transfersTo as $item)
+                                    <tr>
+                                        <td class="table-text"><div>{{ date('j F Y', strtotime($item->created_at)) }}</div></td>
+                                        <td class="table-text"><div>{{ $item->task()->first()->name }}</div></td>
+                                        <td class="table-text"><div>{{ $item->to()->first()->name }}</div></td>
+                                        <td class="table-text"><div>{{ $item->status }}</div></td>
+                                        @if ($item->status == "Waiting")
+                                        <td>
+                                            <form action="{{url('transfer/' . $item->id)}}" method="POST">
+                                                {{ csrf_field() }}
+
+                                                <button type="submit" name="accept" value="accept" id="transfer-task-{{ $item->id }}" class="btn btn-success">
+                                                    <i class="fa fa-btn"></i>Accept
+                                                </button>
+                                            </form>
+                                            <form action="{{url('transfer/' . $item->id)}}" method="POST" class="mt-1">
+                                                {{ csrf_field() }}
+
+                                                <button type="submit" name="reject" value="reject" class="btn btn-danger">
+                                                    <i class="fa fa-btn"></i>Reject
+                                                </button>
+                                            </form>
+                                        </td>
+                                        @endif
+                                    </tr>
+                                @endforeach
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            @endif
+            <div class="card mt-3">
                 <div class="card-header">
                     Suggest a New Transfer
                 </div>
@@ -55,35 +102,6 @@
                     </form>
                 </div>
             </div>
-            @if (count($transfersTo) > 0)
-                <div class="card mt-3">
-                    <div class="card-header">
-                        Incoming Transfers
-                    </div>
-
-                    <div class="card-body">
-                        <table class="table table-striped task-table">
-                            <thead>
-                                <th>Date</th>
-                                <th>Task</th>
-                                <th>To User</th>
-                                <th>Status</th>
-                                <th>&nbsp;</th>
-                            </thead>
-                            <tbody>
-                                @foreach ($transfersTo as $item)
-                                    <tr>
-                                        <td class="table-text"><div>{{ date('j F Y', strtotime($item->created_at)) }}</div></td>
-                                        <td class="table-text"><div>{{ $item->task()->first()->name }}</div></td>
-                                        <td class="table-text"><div>{{ $item->to()->first()->name }}</div></td>
-                                        <td class="table-text"><div>{{ $item->status }}</div></td>
-                                    </tr>
-                                @endforeach
-                            </tbody>
-                        </table>
-                    </div>
-                </div>
-            @endif
 
             @if (count($transfersFrom) > 0)
                 <div class="card mt-3">
@@ -107,6 +125,17 @@
                                         <td class="table-text"><div>{{ $item->task()->first()->name }}</div></td>
                                         <td class="table-text"><div>{{ $item->to()->first()->name }}</div></td>
                                         <td class="table-text"><div>{{ $item->status }}</div></td>
+                                        @if ($item->status == "Waiting")
+                                        <td>
+                                            <form action="{{url('transfer/' . $item->id)}}" method="POST">
+                                                {{ csrf_field() }}
+
+                                                <button type="submit" name="cancel" value="cancel" class="btn btn-danger">
+                                                    <i class="fa fa-btn"></i>Cancel
+                                                </button>
+                                            </form>
+                                        </td>
+                                        @endif
                                     </tr>
                                 @endforeach
                             </tbody>

@@ -5,6 +5,8 @@ namespace App\Http\Controllers;
 use Illuminate\Http\Request;
 use App\Repositories\TaskRepository;
 use App\User;
+use App\Transfer;
+use Illuminate\Support\Facades\Input;
 
 class TransferController extends Controller
 {
@@ -36,6 +38,20 @@ class TransferController extends Controller
             'to_user_id' => $request->user,
             'status' => 'Waiting',
         ]);
+
+        return redirect('/transfers');
+    }
+
+    public function update(Request $request, Transfer $transfer)
+    {
+        if(Input::get('accept')) {
+            $transfer->task()->first()->update(['user_id' => $transfer->to_user_id]);
+            $transfer->update(['status' => 'Accepted']);
+        } else if(Input::get('reject')) {
+            $transfer->update(['status' => 'Rejected']);
+        } else if(Input::get('cancel')){
+            $transfer->delete();
+        }
 
         return redirect('/transfers');
     }
