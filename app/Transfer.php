@@ -6,6 +6,8 @@ use Illuminate\Database\Eloquent\Model;
 
 class Transfer extends Model
 {
+    protected $fillable = ['task_id', 'to_user_id', 'status'];
+
     public function task()
     {
         return $this->belongsTo(Task::class);

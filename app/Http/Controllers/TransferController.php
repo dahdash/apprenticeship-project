@@ -29,4 +29,15 @@ class TransferController extends Controller
         ]);
     }
 
+    public function store(Request $request)
+    {
+        $request->user()->transfersFrom()->create([
+            'task_id' => $request->task,
+            'to_user_id' => $request->user,
+            'status' => 'Waiting',
+        ]);
+
+        return redirect('/transfers');
+    }
+
 }

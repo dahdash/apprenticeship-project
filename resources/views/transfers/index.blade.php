@@ -12,7 +12,6 @@
                     <!-- Display Validation Errors -->
                     @include('common.errors')
 
-                    <!-- New Task Form -->
                     <form action="{{ url('transfer') }}" method="POST">
                         {{ csrf_field() }}
 
@@ -31,7 +30,7 @@
                         </div>
 
                         <div class="form-group">
-                            <label for="user-name" class="col-sm-3 col-form-label">User</label>
+                            <label for="user-name" class="col-sm-3 col-form-label">To User</label>
 
                             <div class="col-sm-6">
                                 <select type="text" name="user" id="user-name" class="form-control">
@@ -56,6 +55,65 @@
                     </form>
                 </div>
             </div>
+            @if (count($transfersTo) > 0)
+                <div class="card mt-3">
+                    <div class="card-header">
+                        Incoming Transfers
+                    </div>
+
+                    <div class="card-body">
+                        <table class="table table-striped task-table">
+                            <thead>
+                                <th>Date</th>
+                                <th>Task</th>
+                                <th>To User</th>
+                                <th>Status</th>
+                                <th>&nbsp;</th>
+                            </thead>
+                            <tbody>
+                                @foreach ($transfersTo as $item)
+                                    <tr>
+                                        <td class="table-text"><div>{{ date('j F Y', strtotime($item->created_at)) }}</div></td>
+                                        <td class="table-text"><div>{{ $item->task()->first()->name }}</div></td>
+                                        <td class="table-text"><div>{{ $item->to()->first()->name }}</div></td>
+                                        <td class="table-text"><div>{{ $item->status }}</div></td>
+                                    </tr>
+                                @endforeach
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            @endif
+
+            @if (count($transfersFrom) > 0)
+                <div class="card mt-3">
+                    <div class="card-header">
+                        Outgoing Transfers
+                    </div>
+
+                    <div class="card-body">
+                        <table class="table table-striped task-table">
+                            <thead>
+                                <th>Date</th>
+                                <th>Task</th>
+                                <th>To User</th>
+                                <th>Status</th>
+                                <th>&nbsp;</th>
+                            </thead>
+                            <tbody>
+                                @foreach ($transfersFrom as $item)
+                                    <tr>
+                                        <td class="table-text"><div>{{ date('j F Y', strtotime($item->created_at)) }}</div></td>
+                                        <td class="table-text"><div>{{ $item->task()->first()->name }}</div></td>
+                                        <td class="table-text"><div>{{ $item->to()->first()->name }}</div></td>
+                                        <td class="table-text"><div>{{ $item->status }}</div></td>
+                                    </tr>
+                                @endforeach
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            @endif
 
         </div>
     </div>
