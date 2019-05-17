@@ -10,18 +10,11 @@ class TaskPolicy
 {
     use HandlesAuthorization;
 
-    /**
-     * Create a new policy instance.
-     *
-     * @return void
-     */
-    public function __construct()
-    {
-        //
-    }
 
     public function destroy(User $user, Task $task)
     {
+        if ($task->transfers()->where('status', 'Waiting')->get()->count() > 0)
+            return false;
         return $user->id === $task->user_id;
     }
 
@@ -33,4 +26,5 @@ class TaskPolicy
             return false;
         return true;
     }
+
 }

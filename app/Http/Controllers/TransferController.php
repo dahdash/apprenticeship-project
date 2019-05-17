@@ -47,11 +47,14 @@ class TransferController extends Controller
     public function update(Request $request, Transfer $transfer)
     {
         if(Input::get('accept')) {
+            $this->authorize('respond', $transfer);
             $transfer->task()->first()->update(['user_id' => $transfer->to_user_id]);
             $transfer->update(['status' => 'Accepted']);
         } else if(Input::get('reject')) {
+            $this->authorize('respond', $transfer);
             $transfer->update(['status' => 'Rejected']);
         } else if(Input::get('cancel')){
+            $this->authorize('cancel', $transfer);
             $transfer->delete();
         }
 
