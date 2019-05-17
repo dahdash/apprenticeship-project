@@ -24,4 +24,13 @@ class TaskPolicy
     {
         return $user->id === $task->user_id;
     }
+
+    public function transfer(User $user, Task $task)
+    {
+        if ($user->id != $task->user_id)
+            return false;
+        if ($task->transfers()->where('status', 'Waiting')->get()->count() > 0)
+            return false;
+        return true;
+    }
 }

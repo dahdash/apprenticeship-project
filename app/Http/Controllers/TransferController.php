@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use Illuminate\Http\Request;
 use App\Repositories\TaskRepository;
 use App\User;
+use App\Task;
 use App\Transfer;
 use Illuminate\Support\Facades\Input;
 
@@ -19,7 +20,7 @@ class TransferController extends Controller
 
     public function index(Request $request)
     {
-        $tasks = $this->tasks->forUser($request->user())->pluck('name', 'id')->toArray();
+        $tasks = $this->tasks->forUserToTransfer($request->user())->pluck('name', 'id')->toArray();
         $users = User::where('id', '!=', $request->user()->id)->get()->pluck('name', 'id')->toArray();
         $transfersFrom = $request->user()->transfersFrom()->get();
         $transfersTo = $request->user()->transfersTo()->get();
@@ -33,6 +34,7 @@ class TransferController extends Controller
 
     public function store(Request $request)
     {
+        $this->authorize('transfer', Task::where('id', $request->task)->first());
         $request->user()->transfersFrom()->create([
             'task_id' => $request->task,
             'to_user_id' => $request->user,

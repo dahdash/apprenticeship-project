@@ -18,4 +18,12 @@ class TaskRepository
                     ->orderBy('created_at', 'asc')
                     ->get();
     }
+
+    public function forUserToTransfer(User $user)
+    {
+        $tasks = $user->tasks()->orderBy('created_at', 'asc')->get();
+        return $tasks->reject(function ($task) {
+            return $task->transfers()->where('status', 'Waiting')->get()->count() > 0;
+        });
+    }
 }
