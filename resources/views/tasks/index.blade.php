@@ -55,7 +55,7 @@
                                     <tr>
                                         <td class="table-text"><div>{{ $task->name }}</div></td>
                                         <td>
-                                        @if ($task->transfers()->first()->status != 'Waiting')
+                                        @if ($task->transfers()->first() == NULL || $task->transfers()->first()->status != 'Waiting')
                                         <!-- Task Delete Button -->
                                             <form action="{{url('task/' . $task->id)}}" method="POST">
                                                 {{ csrf_field() }}
